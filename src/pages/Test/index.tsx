@@ -1,5 +1,5 @@
 const Comp: React.FC = () => {
-  return <div>test</div>;
+  return <div>我是详情界面</div>;
 };
 
 export default Comp;

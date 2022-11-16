@@ -3,7 +3,7 @@ import { useOutlet } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.module.less';
-import KeepAlive from './KeepAlive';
+import KeepAlive from '@/components/KeepAlive';
 
 const Comp: React.FC = () => {
   const outlet = useOutlet();
