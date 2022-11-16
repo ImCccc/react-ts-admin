@@ -8,6 +8,7 @@ import styles from './index.module.less';
 
 const Comp: React.FC = () => {
   const User = useMobx('User');
+  const KeepAliveRoute = useMobx('KeepAliveRoute');
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -44,7 +45,10 @@ const Comp: React.FC = () => {
         theme="dark"
         items={thisMenus}
         className={styles.menu}
-        onClick={(e) => navigate(e.key)}
+        onClick={(e) => {
+          navigate(e.key);
+          KeepAliveRoute.remove();
+        }}
         defaultOpenKeys={defaultOpenKeys}
         selectedKeys={selectedKeys}
       />

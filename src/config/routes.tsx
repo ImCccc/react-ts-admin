@@ -72,6 +72,12 @@ const routeMenuList: RouteMenuProps[] = [
     icon: <MeunIcon icon="icon_jieruliucheng" />,
     Component: lazy(() => import('@/pages/IcescreenList')),
   },
+  {
+    label: '测试',
+    path: '/test',
+    hidemenu: true,
+    Component: lazy(() => import('@/pages/Test')),
+  },
 ];
 
 export const getRoutes = (routeMenuList: RouteMenuProps[]): RouteProps[] => {

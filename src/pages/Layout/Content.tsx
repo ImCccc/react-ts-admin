@@ -1,11 +1,15 @@
 import { useMobx } from '@/stores';
-import { Outlet } from 'react-router-dom';
+import { useOutlet } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.module.less';
+import KeepAlive from './KeepAlive';
 
 const Comp: React.FC = () => {
+  const outlet = useOutlet();
   const User = useMobx('User');
+  // 缓存的路由
+  const KeepAliveRoute = useMobx('KeepAliveRoute');
   return (
     <div className={styles.content}>
       <div className={styles.c_header}>
@@ -16,7 +20,7 @@ const Comp: React.FC = () => {
         </div>
         <HeaderDropdown />
       </div>
-      <Outlet />
+      <KeepAlive cacheList={KeepAliveRoute.cacheList}>{outlet}</KeepAlive>
     </div>
   );
 };
