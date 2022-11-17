@@ -9,6 +9,7 @@ import { TaskServicePage } from '@/services/smzx/TaskService';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { useMobx } from '@/stores';
+import useEffectCacheRoute from '@/hooks/useEffectCacheRoute';
 
 type ParamsProps = { product_id?: string };
 
@@ -25,6 +26,10 @@ const Comp: React.FC = () => {
   const [params, setParams] = useState<ParamsProps>({});
   const navigate = useNavigate();
   const KeepAliveRoute = useMobx('KeepAliveRoute');
+
+  useEffectCacheRoute(() => {
+    console.log('模拟的 useEffect');
+  });
 
   // 点击查询
   const onSearch = (data: ParamsProps) => {
