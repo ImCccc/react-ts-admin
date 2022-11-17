@@ -45,19 +45,16 @@ section {
   font-size: 1.8rem;
 }
 
-.common-page {
-  flex-grow: 1;
-  margin-top: 2rem;
-  padding: 0 2rem;
-  overflow: auto;
-}
-
 .iconfont {
   cursor: pointer;
 }
 
-.margin-space {
+.margin-bottom {
   margin-bottom: 2rem;
+}
+
+.margin-top {
+  margin-top: 2rem;
 }
 
 .link {
@@ -89,13 +86,10 @@ section {
   content: '*';
 }
 
-.layout-container-active {
+.layout-container__keep-alive {
   display: flex;
   flex-grow: 1;
   flex-direction: column;
-  overflow: hidden;
-}
-
-.layout-container__keep-alive {
-  display: none;
+  padding: 0 2rem;
+  overflow: auto;
 }

@@ -117,13 +117,8 @@ const Comp: React.FC = () => {
   ];
 
   return (
-    <div className="common-page">
-      <TableSearch
-        fields={fields}
-        onReset={onReset}
-        onSearch={onSearch}
-        className="margin-space"
-      />
+    <>
+      <TableSearch fields={fields} onReset={onReset} onSearch={onSearch} />
       <TableList
         onRef={tableRef}
         columns={columns}
@@ -131,7 +126,7 @@ const Comp: React.FC = () => {
         service={TaskRecordServicePage}
         pagination={{ showQuickJumper: true }}
       />
-    </div>
+    </>
   );
 };
 

@@ -65,12 +65,8 @@ const Comp: React.FC = () => {
   );
 
   return (
-    <div className="common-page">
-      <TableSearch
-        className="margin-space"
-        fields={fields}
-        onSearch={onSearch}
-      />
+    <>
+      <TableSearch fields={fields} onSearch={onSearch} />
       <TableList
         rowKey="code"
         onRef={tableRef}
@@ -78,7 +74,7 @@ const Comp: React.FC = () => {
         reqParams={params}
         service={TaskServicePage}
       />
-    </div>
+    </>
   );
 };
 

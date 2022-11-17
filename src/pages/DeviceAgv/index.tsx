@@ -59,9 +59,8 @@ const Comp: React.FC = () => {
   }, []);
 
   return (
-    <div className="common-page">
+    <>
       <TableSearch
-        className="margin-space"
         fields={fields}
         onSearch={onSearch}
         renderButtons={() => (
@@ -78,7 +77,7 @@ const Comp: React.FC = () => {
         reqParams={params}
         service={AgvDeviceServicePage}
       />
-    </div>
+    </>
   );
 };
 

@@ -37,11 +37,8 @@ const KeepAlive: React.FC<KeepAliveProps> = ({ cacheList = [], children }) => {
       {Array.from(componentList.current).map(([key, component]) => (
         <div
           key={key}
-          className={
-            key == activeKey.current
-              ? 'layout-container-active'
-              : 'layout-container__keep-alive'
-          }
+          className="layout-container__keep-alive"
+          style={{ display: key == activeKey.current ? '' : 'none' }}
         >
           {component}
         </div>
