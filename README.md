@@ -6,20 +6,6 @@ git remote update origin --prune
 
 项目目录打开 cmd 执行: rd /s/q node_modules
 
-## 安装公司 openapi:
-
-```
-yarn add @infore/openapi -D --registry=http://nexus.infore-robotics.cn/repository/infore-npm-group/
-
-```
-
-## 安装公司 infore
-
-```
-yarn add @infore/fabric -D --registry=http://nexus.infore-robotics.cn/repository/infore-npm-group/
-
-```
-
 ## React 18 中 useEffect 会运行两次
 
 将严格模式去掉
