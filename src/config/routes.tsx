@@ -110,4 +110,19 @@ export const getMenus = (list = routeMenuList): MeunProps[] =>
     };
   });
 
+export const getBreadcrumbData = () => {
+  const breadcrumbData: { [key: string]: string } = {};
+  const loop = (routeMenuList: RouteMenuProps[]) => {
+    routeMenuList.forEach((route) => {
+      const { children, path, label } = route;
+      if (path) breadcrumbData[path] = label;
+      if (children) loop(children);
+    });
+  };
+  loop(routeMenuList);
+  return breadcrumbData;
+};
+
+export const breadcrumbData = getBreadcrumbData();
+
 export default getRoutes(routeMenuList);

@@ -6,26 +6,35 @@ import React, {
   useCallback,
   useImperativeHandle,
 } from 'react';
-import { Table, TableProps, ButtonProps, Button, message } from 'antd';
-import { deleteConfirm, remToNumber } from '@/utils/util';
+import moment from 'moment';
 import type { ColumnType } from 'antd/lib/table';
-import dayjs from 'dayjs';
+import { deleteConfirm, remToNumber } from '@/utils/util';
+import { Table, TableProps, ButtonProps, Button, message } from 'antd';
 
-export type TableListColumns<T> = (ColumnType<T> & {
-  operList?: {
-    confirmKey?: string;
-    buttonProps?: ButtonProps;
-    label: string;
-    labelRender?: (row: T) => any;
-    callback: (row: T) => any;
-  }[];
-  /** 填时间格式，例如"yyyy-mm-dd" */
-  timeFormat?: 'YYYY-MM-DD' | 'YYYY-MM-DD HH:mm' | 'YYYY-MM-DD HH:mm:ss';
+type TimeFormatProps =
+  | 'YYYY-MM-DD'
+  | 'YYYY-MM-DD HH:mm'
+  | 'YYYY-MM-DD HH:mm:ss';
+
+type ColumnTypeProps = 'date' | 'button' | 'text';
+
+type ButtonType<T> = {
+  label: string;
+  callback: (row: T) => any;
+  confirmKey?: string;
+  buttonProps?: ButtonProps;
+  labelRender?: (row: T) => React.ReactNode;
+};
+
+export type TableListColumns<T = any> = (ColumnType<T> & {
+  type?: ColumnTypeProps;
+  buttons?: ButtonType<T>[];
+  timeFormat?: TimeFormatProps;
 })[];
 
-export type TableListProps<T> = {
+export type TableListProps = {
   // 表格列
-  columns: TableListColumns<T>;
+  columns: TableListColumns;
   // api
   service: (...args: any) => Promise<any>;
   // 筛选值
@@ -33,21 +42,26 @@ export type TableListProps<T> = {
   // 用于暴露方法
   onRef?: React.MutableRefObject<TableListRef | undefined>;
   // 数据处理
-  formatData?: (data: Record<string, any>) => Record<string, any>;
+  formatData?: (data: Record<string, any>) => { list: any[]; total: number };
 } & TableProps<any>;
 
 // 暴露给父组件的方法
-export type TableListRef = {
-  refresh: () => void;
+export type TableListRef = { refresh: () => void };
+
+const formatDate = (date: number | string, timeFormat?: TimeFormatProps) => {
+  return +date > 10000
+    ? moment(+date).format(timeFormat || 'YYYY-MM-DD HH:mm:ss')
+    : '';
 };
 
 // 表格组件
-const TableList: React.FC<TableListProps<any>> = ({
+const TableList: React.FC<TableListProps> = ({
+  onRef,
   columns,
   service,
   reqParams,
-  onRef,
   formatData,
+  pagination,
   ...props
 }) => {
   // 表格数据
@@ -82,24 +96,16 @@ const TableList: React.FC<TableListProps<any>> = ({
 
   // 获取表格数据API
   const getData = useCallback(
-    async (page: number, _pageSize: number) => {
+    async (page_index: number, page_size: number) => {
       setLoading(true);
       try {
-        let result = await service({
-          page_index: page,
-          page_size: _pageSize,
-          ...reqParams,
-        });
-        setLoading(false);
-        // 如果用户用了数据处理
-        if (formatData) result = formatData(result);
-        setLoading(false);
+        let result = await service({ page_index, page_size, ...reqParams });
+        if (formatData) result = formatData(result); // 如果用户用了数据处理
         setData(result.list);
         setTotal(result.total);
-        setCurrent(page);
-      } catch (error) {
-        setLoading(false);
-      }
+        setCurrent(page_index);
+      } catch (error) {}
+      setLoading(false);
     },
     [reqParams, formatData, service],
   );
@@ -110,71 +116,56 @@ const TableList: React.FC<TableListProps<any>> = ({
   }, [getData, pageSize]);
 
   // 暴露刷新表格数据的方法
-  useImperativeHandle(onRef, () => {
-    return {
-      refresh: () => getData(current, pageSize),
-    };
-  });
-
-  // 接收分页的 props
-  let paginationProps = {};
-  if (props.pagination) {
-    paginationProps = props.pagination;
-  }
+  useImperativeHandle(
+    onRef,
+    (): TableListRef => ({ refresh: () => getData(current, pageSize) }),
+  );
 
   // 页码或 pageSize 改变的回调，参数是改变后的页码及每页条数
-  const onChange = async (_page: number, _pageSize: number) => {
-    // 如果 pageSize 变了
-    if (pageSize !== _pageSize) {
-      // 返回第一页
-      await getData(1, _pageSize);
+  const onChange = async (updatePage: number, updatePageSize: number) => {
+    if (pageSize !== updatePageSize) {
+      // 如果 pageSize 变了, 返回第一页
+      await getData(1, updatePageSize);
       setCurrent(1);
-      setPageSize(_pageSize);
-      return;
+      return setPageSize(updatePageSize);
     }
-    await getData(_page, _pageSize);
-    setCurrent(_page);
+    await getData(updatePage, updatePageSize);
+    setCurrent(updatePage);
   };
 
-  // 计算column
   const _column = useMemo(() => {
-    for (const column of columns) {
-      const { ellipsis, timeFormat, render, operList } = column;
-      column.ellipsis = ellipsis !== false;
-      // 格式化时间
-      if (timeFormat && !render) {
-        column.render = (date) =>
-          +date > 10000 ? dayjs(+date).format(timeFormat) : '';
+    return columns.map((column) => {
+      const cloneColumn = { ...column };
+      const { ellipsis, timeFormat, buttons, type, align, title } = column;
+      cloneColumn.ellipsis = ellipsis !== false;
+
+      if (type === 'date') {
+        cloneColumn.render = (date) => formatDate(date, timeFormat);
       }
 
-      // 操作列表
-      if (operList && !render) {
-        column.align = column.align || 'center';
-        column.title = column.title || '操作';
-        column.render = (_, row) =>
-          operList.map(
+      if (type === 'button' && buttons) {
+        cloneColumn.align = align || 'center';
+        cloneColumn.title = title || '操作';
+        cloneColumn.render = (_, row) =>
+          buttons.map(
             ({ label, callback, confirmKey, buttonProps, labelRender }) => {
               const isDelete = label.includes('删除');
-
-              const operClick = async () => {
+              const _onClick = async () => {
                 if (!isDelete) return callback(row);
                 await deleteConfirm(
                   `确定要删除${confirmKey ? `"${row[confirmKey]}"` : ''}?`,
                 );
-                try {
-                  await callback(row);
-                  message.success('删除成功!');
-                  getData(current, pageSize);
-                } catch (error) {}
+                await callback(row);
+                message.success('删除成功!');
+                getData(current, pageSize);
               };
-
               return (
                 <Button
                   type="link"
                   key={label}
                   danger={isDelete}
                   {...buttonProps}
-                  onClick={operClick}
+                  onClick={_onClick}
                 >
                   {labelRender ? labelRender(row) : label}
                 </Button>
@@ -182,26 +173,29 @@ const TableList: React.FC<TableListProps<any>> = ({
             },
           );
       }
-    }
-    return columns;
+
+      return cloneColumn;
+    });
   }, [columns, current, getData, pageSize]);
+
+  const thisPagination = {
+    ...pagination,
+    total,
+    current,
+    onChange,
+    pageSize,
+  };
 
   return (
     <Table
       rowKey="id"
       scroll={scroll}
       {...props}
-      pagination={{
-        pageSize,
-        ...paginationProps,
-        current,
-        total,
-        onChange,
-      }}
       ref={tableRef}
       dataSource={data}
       columns={_column}
       loading={loading}
+      pagination={thisPagination}
     />
   );
 };

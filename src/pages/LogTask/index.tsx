@@ -78,14 +78,14 @@ const Comp: React.FC = () => {
       dataIndex: 'name',
     },
     {
+      type: 'date',
       title: '下发时间',
       dataIndex: 'start_time',
-      timeFormat: 'YYYY-MM-DD HH:mm:ss',
     },
     {
+      type: 'date',
       title: '结束时间',
       dataIndex: 'finish_time',
-      timeFormat: 'YYYY-MM-DD HH:mm:ss',
     },
     {
       title: '执行结果',
@@ -104,9 +104,8 @@ const Comp: React.FC = () => {
       dataIndex: 'err',
     },
     {
-      width: 120,
-      ellipsis: false,
-      operList: [
+      type: 'button',
+      buttons: [
         {
           label: '导出',
           callback: ({ id }) =>

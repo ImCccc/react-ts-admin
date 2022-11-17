@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import HeaderDropdown from './HeaderDropdown';
 import styles from './index.module.less';
 import KeepAlive from '@/components/KeepAlive';
+import Breadcrumb from './Breadcrumb';
 
 const Comp: React.FC = () => {
   const outlet = useOutlet();
@@ -13,6 +14,7 @@ const Comp: React.FC = () => {
   return (
     <div className={styles.content}>
       <div className={styles.c_header}>
+        <Breadcrumb />
         <div className="flex">
           <a onClick={() => (User.role = 'leader')}>队长</a>
           <div style={{ width: '30px' }}></div>

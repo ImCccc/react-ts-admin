@@ -50,7 +50,13 @@ const Comp: React.FC = () => {
       },
       {
         ellipsis: false,
-        operList: [
+        type: 'button',
+        buttons: [
+          {
+            label: '删除',
+            confirmKey: 'name',
+            callback: () => console.log(1),
+          },
           {
             label: '编辑',
             callback: () => {

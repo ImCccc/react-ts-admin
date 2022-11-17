@@ -1,7 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-
 import HeaderDropdown from './HeaderDropdown';
-
 import styles from './index.module.less';
 
 const Header: React.FC = () => {
