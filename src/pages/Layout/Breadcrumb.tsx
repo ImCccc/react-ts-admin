@@ -3,7 +3,10 @@ import { Fragment, useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import styles from './index.module.less';
 
-type BreadcrumbProps = { label: string; path: string };
+type BreadcrumbProps = {
+  label: string;
+  path: string;
+};
 
 const Comp: React.FC = () => {
   const { pathname } = useLocation();

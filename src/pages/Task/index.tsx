@@ -61,7 +61,7 @@ const Comp: React.FC = () => {
             label: '编辑',
             callback: () => {
               KeepAliveRoute.addCacheRoute();
-              navigate('/test');
+              navigate('/task/index/test');
             },
           },
         ],

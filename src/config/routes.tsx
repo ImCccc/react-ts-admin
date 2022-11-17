@@ -63,13 +63,14 @@ const routeMenuList: RouteMenuProps[] = [
         authority: 'admin',
         Component: lazy(() => import('@/pages/LogTask')),
       },
+      {
+        label: '测试',
+        path: '/task/index/test',
+        // 详情界面, hidemenu: true; 路径是有规范: /主菜单/子菜单/详情
+        hidemenu: true,
+        Component: lazy(() => import('@/pages/Test')),
+      },
     ],
-  },
-  {
-    label: '测试',
-    path: '/test',
-    hidemenu: true,
-    Component: lazy(() => import('@/pages/Test')),
   },
 ];
 
