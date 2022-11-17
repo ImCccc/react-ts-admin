@@ -66,13 +66,6 @@ const routeMenuList: RouteMenuProps[] = [
     ],
   },
   {
-    label: '视频管理',
-    path: '/icescreenList',
-    authority: 'admin',
-    icon: <MeunIcon icon="icon_jieruliucheng" />,
-    Component: lazy(() => import('@/pages/IcescreenList')),
-  },
-  {
     label: '测试',
     path: '/test',
     hidemenu: true,
