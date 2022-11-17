@@ -1,4 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getMenus, MeunProps } from '@/config/routes';
 import { observer } from 'mobx-react-lite';
@@ -12,6 +18,7 @@ const Comp: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+
   // 记录当前实现的左侧菜单的有效路径
   const menusMap = useRef<{ [k: string]: boolean }>({});
 
@@ -48,22 +55,27 @@ const Comp: React.FC = () => {
     }
   }, [pathname]);
 
+  const _navigate = useCallback(
+    (key = '/') => {
+      KeepAliveRoute.remove();
+      navigate(key);
+    },
+    [KeepAliveRoute, navigate],
+  );
+
   return (
     <div className={styles.menuwrap}>
-      <div onClick={() => navigate('/')} className={styles.m_title}>
+      <div className={styles.m_title} onClick={() => _navigate()}>
         语音标记平台
       </div>
       <Menu
-        mode="inline"
         theme="dark"
+        mode="inline"
         items={thisMenus}
         className={styles.menu}
-        onClick={(e) => {
-          navigate(e.key);
-          KeepAliveRoute.remove();
-        }}
-        defaultOpenKeys={defaultOpenKeys}
         selectedKeys={selectedKeys}
+        onClick={(e) => _navigate(e.key)}
+        defaultOpenKeys={defaultOpenKeys}
       />
     </div>
   );

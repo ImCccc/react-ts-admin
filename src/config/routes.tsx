@@ -34,12 +34,12 @@ const route404 = {
 
 const routeMenuList: RouteMenuProps[] = [
   {
-    label: '设备管理',
+    label: '菜单-1',
     path: '/device',
     icon: <MeunIcon icon="icon_yingyong" />,
     children: [
       {
-        label: '机器人管理',
+        label: '菜单-1-1',
         path: '/device/agv',
         authority: 'admin',
         Component: lazy(() => import('@/pages/DeviceAgv')),
@@ -47,28 +47,28 @@ const routeMenuList: RouteMenuProps[] = [
     ],
   },
   {
-    label: '任务管理',
+    label: '菜单-2',
     path: '/task',
     icon: <MeunIcon icon="icon_renwu" />,
     children: [
       {
-        label: '任务列表',
+        label: '菜单-2-1',
         path: '/task/index',
         isHomepage: true,
         Component: lazy(() => import('@/pages/Task')),
       },
       {
-        label: '任务记录',
-        path: '/task/log',
-        authority: 'admin',
-        Component: lazy(() => import('@/pages/LogTask')),
-      },
-      {
-        label: '测试',
+        label: '菜单-2-1-详情',
         path: '/task/index/test',
         // 详情界面, hidemenu: true; 路径是有规范: /主菜单/子菜单/详情
         hidemenu: true,
         Component: lazy(() => import('@/pages/Test')),
+      },
+      {
+        label: '菜单-2-2',
+        path: '/task/log',
+        authority: 'admin',
+        Component: lazy(() => import('@/pages/LogTask')),
       },
     ],
   },
